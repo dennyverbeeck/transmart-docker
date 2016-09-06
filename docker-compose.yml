@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  tmweb:
+    build: ./transmart-web
+    ports:
+      - "80:80"
+    depends_on:
+      - tmapp
+    networks:
+      - front
+  tmapp:
+    build: ./transmart-app
+    depends_on:
+      - tmdb
+      - tmsolr
+    networks:
+      - front
+      - back
+  tmdb:
+    build: ./transmart-db
+    networks:
+      - back
+  tmsolr:
+    build: ./transmart-solr
+    networks:
+      - back
+  tmrserve:
+    build: ./transmart-rserve
+    volumes_from:
+      - tmapp
+    networks:
+      - back
+  tmload:
+    build: ./transmart-load
+    depends_on:
+      - tmdb
+    networks:
+      - back
+
+networks:
+  front:
+  back:
