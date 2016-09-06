@@ -52,6 +52,8 @@ To start, we will need to expose Postgres to your host machine. Add a `ports` se
 ```YAML
   tmdb:
     build: ./transmart-db
+	networks:
+      - back
     ports:
       - "9001:5432"
 ```
@@ -62,7 +64,5 @@ Now we have access to our database via port 9001. Make note of the IP-address wh
 sudo su postgres
 pg_dump -a --disable-triggers transmart | psql -h <docker-ip> -p <docker-db-port> -U docker transmart
 ```
-This command will try to log in as user `docker` on docker-based databse, its password is `docker`. In general it is not a good idea to expose our database, so after the copy is complete remove the ports section from the `tmdb` service and execute another `docker-compose up` to apply the change.
+This command will try to log in as user `docker` on docker-based databse, its password is `docker`. In general it is not a good idea to expose our database, so after the copy is complete remove the `ports` section from the `tmdb` service and execute another `docker-compose up` to apply the change.
 
-### Using in production
-In a production environment, you most likely want to put an Apache server in front of tomcat, to act as a reverse proxy.
