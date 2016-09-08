@@ -62,4 +62,7 @@ EXPOSE 5432
 
 USER postgres
 
+# Increase the checkpoint_segments parameter, this increases performance of large data loads like expression values
+RUN echo "checkpoint_segments = 30" >> /etc/postgresql/9.3/main/postgresql.conf
+
 CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]

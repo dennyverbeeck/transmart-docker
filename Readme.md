@@ -13,13 +13,14 @@ this means the services are up and running. Verify this by running `docker-compo
 
 ```
 $ docker-compose.exe ps
-           Name                         Command               State            Ports
----------------------------------------------------------------------------------------------
-transmartdocker_tmapp_1      catalina.sh run                  Up       0.0.0.0:8888->8080/tcp
+           Name                         Command               State             Ports
+----------------------------------------------------------------------------------------------
+transmartdocker_tmapp_1      catalina.sh run                  Up       8080/tcp
 transmartdocker_tmdb_1       /usr/lib/postgresql/9.3/bi ...   Up       5432/tcp
-transmartdocker_tmload_1     make -C samples/postgres         Exit 2
+transmartdocker_tmload_1     echo Use the make commands ...   Exit 0
 transmartdocker_tmrserve_1   /transmart-data/R/root/lib ...   Up       6311/tcp
 transmartdocker_tmsolr_1     java -jar start.jar              Up       8983/tcp
+transmartdocker_tmweb_1      httpd-foreground                 Up       0.0.0.0:80->80/tcp
 ```
 
 This overview gives us a lot of information. We can see all services except for `tmload` are up and running (more on `tmload` later). We also see that port 8888 of our own machine is forwarded to port 8080 of the `tmapp` container. Point your browser to http://localhost:8888/transmart to see your installation running. If you want you can provide your own `transmart.war` file. Simply place it in the `transmart-app` folder and modify the `Dockerfile` in that directory.
