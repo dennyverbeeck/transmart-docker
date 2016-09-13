@@ -4,7 +4,7 @@ services:
   tmweb:
     build: ./transmart-web
     ports:
-      - "80:80"
+      - "8888:80"
     depends_on:
       - tmapp
     networks:
