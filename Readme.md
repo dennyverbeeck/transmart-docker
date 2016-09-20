@@ -89,7 +89,7 @@ $KITCHEN -norep=Y -file=/transmart-data/env/tranSMART-ETL/Kettle/postgres/Kettle
 ```
 Edit the parameters to match your specific case. Notice we specified the `DATA_LOCATION` to be `/my_study/`, so we will need to mount our study directory to that location in the container. We will also need to connect te container to the network where our database is connected, by default this network will be called `transmartdocker_back`. The default Jave heap size is 512MB, for large datasets it may be required to increase this. This can be done with the `JAVAMAXMEM` environment variable. The following command accomplishes all of these things, and runs the shell script we just created.
 ```
-docker run -it --rm              \
+docker run -t --rm              \
   --network transmartdocker_back \
   -v $HOME/my_study:/my_study    \
   -e JAVAMAXMEM='4096'           \
