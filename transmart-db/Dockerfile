@@ -1,11 +1,11 @@
 FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make
-RUN curl http://library.transmartfoundation.org/release/release16_1_0_artifacts/transmart-data-release-16.1.zip -o transmart-data-release-16.1.zip && \
-    unzip transmart-data-release-16.1.zip && \
-    mv transmart-data-release-16.1 transmart-data && \
-    rm transmart-data-release-16.1.zip
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
+RUN curl https://codeload.github.com/dennyverbeeck/transmart-data/zip/master -o transmart-data.zip && \
+    unzip transmart-data.zip && \
+    mv transmart-data-master transmart-data && \
+    rm transmart-data.zip
 
 #### PostgreSQL Setup
 # Add the PostgreSQL PGP key to verify their Debian packages.
@@ -60,10 +60,18 @@ VOLUME ["/var/lib/postgresql/tablespaces", "/var/log/postgresql", "/var/lib/post
 
 EXPOSE 5432
 
+ADD start.sh /usr/bin/start.sh
+ADD filebeat.yml /etc/filebeat/filebeat.yml
+ADD logstash-beats.crt /etc/filebeat/logstash-beats.crt
+ADD filebeat /usr/bin/filebeat
+RUN chmod +x /usr/bin/start.sh
+RUN chmod +x /usr/bin/filebeat
+
 USER postgres
 
 # Using defaults calculations from PgTune (https://github.com/le0pard/pgtune)
-ADD tunepgsql.sh /tunepgsql.sh
-RUN bash /tunepgsql.sh
+ADD tunepgsql.sh /usr/bin/tunepgsql.sh
+RUN bash /usr/bin/tunepgsql.sh
+RUN mkdir -p /var/lib/postgresql/9.3/main/pg_log
 
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+CMD ["/usr/bin/start.sh"]

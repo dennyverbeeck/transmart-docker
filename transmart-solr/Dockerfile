@@ -1,11 +1,11 @@
 FROM openjdk:8
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make
-RUN curl http://library.transmartfoundation.org/release/release16_1_0_artifacts/transmart-data-release-16.1.zip -o transmart-data-release-16.1.zip && \
-    unzip transmart-data-release-16.1.zip && \
-    mv transmart-data-release-16.1 transmart-data && \
-    rm transmart-data-release-16.1.zip
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
+RUN curl https://codeload.github.com/dennyverbeeck/transmart-data/zip/master -o transmart-data.zip && \
+    unzip transmart-data.zip && \
+    mv transmart-data-master transmart-data && \
+    rm transmart-data.zip
 
 WORKDIR /transmart-data
 
