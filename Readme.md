@@ -76,7 +76,7 @@ Place all relevant files together in a directory, for instance at `$HOME/my_stud
 set -x
 $KITCHEN -norep=Y -file=/transmart-data/env/tranSMART-ETL/Kettle/postgres/Kettle-ETL/create_clinical_data.kjb  \
 -param:COLUMN_MAP_FILE=columns.txt \
--param:DATA_LOCATION=/my_study`/ \
+-param:DATA_LOCATION=/my_study/ \
 -param:HIGHLIGHT_STUDY=N \
 -param:SQLLDR_PATH=/usr/bin/psql \
 -param:LOAD_TYPE=I \
