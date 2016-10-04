@@ -37,6 +37,7 @@ ENV PGPORT 5432
 ENV PGDATABASE transmart
 ENV PGUSER docker
 ENV PGPASSWORD docker
+ENV PGSQL_BIN /usr/bin
 
 RUN apt-get install -y --no-install-recommends xz-utils
 
