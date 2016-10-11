@@ -3,41 +3,28 @@ version: '2'
 services:
   tmweb:
     build: ./transmart-web
-    ports:
-      - "8888:80"
     depends_on:
       - tmapp
-    networks:
-      - front
+    network_mode: host
   tmapp:
     build: ./transmart-app
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8009:8009"
     depends_on:
       - tmdb
       - tmsolr
-    networks:
-      - front
-      - back
   tmdb:
     build: ./transmart-db
-    networks:
-      - back
+    ports:
+      - "127.0.0.1:5432:5432"
   tmsolr:
     build: ./transmart-solr
-    networks:
-      - back
   tmrserve:
     build: ./transmart-rserve
     volumes_from:
       - tmapp
-    networks:
-      - back
   tmload:
     build: ./transmart-load
     depends_on:
       - tmdb
-    networks:
-      - back
-
-networks:
-  front:
-  back:
