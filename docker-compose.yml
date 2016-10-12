@@ -5,7 +5,9 @@ services:
     build: ./transmart-web
     depends_on:
       - tmapp
+      - tmelk
     network_mode: host
+    restart: always
   tmapp:
     build: ./transmart-app
     ports:
@@ -14,14 +16,20 @@ services:
     depends_on:
       - tmdb
       - tmsolr
+    restart: always
   tmdb:
     build: ./transmart-db
+    depends_on:
+      - tmelk
+    restart: always
   tmsolr:
     build: ./transmart-solr
+    restart: always
   tmrserve:
     build: ./transmart-rserve
     volumes_from:
       - tmapp
+    restart: always
   tmload:
     build: ./transmart-load
     depends_on:
@@ -33,3 +41,4 @@ services:
       - "5000:5000"
       - "5044:5044"
       - "9200:9200"
+    restart: always
