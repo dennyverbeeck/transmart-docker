@@ -2,7 +2,7 @@ FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
-RUN curl https://codeload.github.com/dennyverbeeck/transmart-data/zip/master -o transmart-data.zip && \
+RUN curl -L https://github.com/dennyverbeeck/transmart-data/archive/master.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
     mv transmart-data-master transmart-data && \
     rm transmart-data.zip
