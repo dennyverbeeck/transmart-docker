@@ -66,4 +66,4 @@ USER postgres
 ADD tunepgsql.sh /usr/bin/tunepgsql.sh
 RUN bash /usr/bin/tunepgsql.sh
 
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]

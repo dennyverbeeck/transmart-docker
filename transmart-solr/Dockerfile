@@ -26,5 +26,5 @@ RUN apt-get purge -y --auto-remove curl unzip make rsync patch php5-cli php5-jso
 VOLUME ["/transmart-data/solr"]
 EXPOSE 8983
 WORKDIR /transmart-data/solr
-CMD ["java", "-jar", "start.jar"]
+ENTRYPOINT ["java", "-jar", "start.jar"]
     

@@ -1,9 +1,13 @@
 # transmart-docker
 
-The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server, and is the only service bound to a host port by default.
+The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.1`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please use the `-local` version of this branch instead.
 
 ### Usage
-It should be sufficient to clone the repository and execute `docker-compose up` in the root directory. This will automatically download all the necessary components, build images, create the network and run the containers. The current version that will be installed is `16.1`. When you see a line like this
+Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line 
+```
+def transmartURL      = "http://localhost/transmart"
+``` 
+to the actual URL of your server. Additionally open the file `transmart-web/httpd-vhosts.cfg` and modify the `ServerAdmin` directive to the e-mail address of your server administrator. It should be sufficient now to execute `docker-compose up` in the root directory of the repository. This will automatically download all the necessary components, build images, create the network and run the containers. When you see a line like this
 
 ```
 tmapp_1     | INFO: Server startup in 40888 ms
@@ -15,25 +19,25 @@ this means the services are up and running. Verify this by running `docker-compo
 $ docker-compose.exe ps
            Name                         Command               State             Ports
 ----------------------------------------------------------------------------------------------
-transmartdocker_tmapp_1      catalina.sh run                  Up       8080/tcp
-transmartdocker_tmdb_1       /usr/lib/postgresql/9.3/bi ...   Up       5432/tcp
+transmartdocker_tmapp_1      catalina.sh run                  Up       127.0.0.1:8009->8009/tcp
+transmartdocker_tmdb_1       /usr/lib/postgresql/9.3/bi ...   Up       127.0.0.1:5432->5432/tcp
 transmartdocker_tmload_1     echo Use the make commands ...   Exit 0
 transmartdocker_tmrserve_1   /transmart-data/R/root/lib ...   Up       6311/tcp
 transmartdocker_tmsolr_1     java -jar start.jar              Up       8983/tcp
-transmartdocker_tmweb_1      httpd-foreground                 Up       0.0.0.0:8888->80/tcp
+transmartdocker_tmweb_1      httpd-foreground                 Up       
 ```
 
-This overview gives us a lot of information. We can see all services except for `tmload` are up and running (more on `tmload` later). We also see that port 8888 of our own machine is forwarded to port 80 of the `tmapp` container. Point your browser to http://localhost:8888/ to see your installation running. If you want you can provide your own `transmart.war` file. Simply place it in the `transmart-app` folder and modify the `Dockerfile` in the `transmart-app` directory.
+This overview gives us a lot of information. We can see all services except for `tmload` are up and running (more on `tmload` later). We also see that port 5432 of our own machine is forwarded to port 5432 of the `tmdb` container, and that port 8009 is forwarded to port 8009 of the `tmapp` container. Exposing the database port to the localhost allows us to connect to it using tools like `psql`. Port 8009 is used by the `tmweb` container to proxy requests to the web application over the `ajp` protocol. Point your browser to your server URL to see your installation running. By default you can log in with username and password admin. Change the password for the admin user as soon as possible.
 
 After your first `docker-compose up` command, use `docker-compose stop` and `docker-compose start` to stop and start the TranSMART stack. Using `docker-compose down` **will delete all volumes as well**, resulting in loss of data loaded to TranSMART.
 
 ### Components
 This `docker-compose` project consists of the following services:
-  - `tmweb`: httpd frontend and reverse-proxy for tomcat
-  - `tmapp`: the tomcat server and application
-  - `tmdb`: the Postgres database,
+  - `tmweb`: httpd frontend and reverse-proxy for tomcat, this container is connected to the `host` network. This allows to see the actual client IPs in the Apache logs rather than the IP of the docker bridge.
+  - `tmapp`: the tomcat server and application,
+  - `tmdb`: the Postgres database, the database in this image has a superadmin with username docker and password docker
   - `tmsolr`: the SOLR installation for faceted search,
-  - `tmrserve`: Rserve instance for advanced analyses and
+  - `tmrserve`: Rserve instance for advanced analyses and,
   - `tmload`: a Kettle installation you can use for loading data.
 
 ### Loading public datasets
@@ -47,25 +51,19 @@ $ docker-compose run --rm tmload make -C samples/postgres load_clinical_ElevadaG
 
 ### Copy data from an existing instance
 
-If you have an existing instance of TranSMART running, you may want to copy the database to your new dockerized instance. It is best you do this to an empty, but initialized TranSMART database, since everything will be copied, including things like sequence values.
+If you have an existing instance of TranSMART running, you may want to copy the database to your new dockerized instance. It is best you do this to an empty, but initialized TranSMART database, since everything will be copied, including things like sequence values. The most portable way of copying is using `pg_dump` to dump all data from the old database in the form of attribute inserts, and use this file to load data into the new database. Using the `--attribute-inserts` option ensures that a single failed insertion (e.g. a row that exists in the new database, like the definition of the admin user) does not cause the whole table not to be loaded. It also guards against minor schema changes, such as a column with default value that was added to an existing table. On the host where the old database resides, log in as the `postgres` user (or any other means that allows you access to the database) and execute the following:
 
-To start, we will need to expose Postgres to your host machine. Add a `ports` section to the `tmdb` service in the `docker-compose.yml` file, and bind a local port of your choice to port 5432. The `tmdb` service should now look like this (the local port is 9001 in this example):
-```YAML
-  tmdb:
-    build: ./transmart-db
-	networks:
-      - back
-    ports:
-      - "9001:5432"
-```
-Execute `docker-compose up` to recreate the database service for the changes to take effect.
-
-Now we have access to our database via port 9001. Make note of the IP-address where your Docker services are running, it will be referred to as `<docker-ip>`. The port you exposed will be referred to as `<docker-db-port>` (set to 9001 in the above example). Log in to the host where your old database resides. The following set of commands will copy the complete database to your docker database. First you need to become the `postgres` user, then you can copy the existing database to the new one:
 ```sh
-sudo su postgres
-pg_dump -a --disable-triggers transmart | psql -h <docker-ip> -p <docker-db-port> -U docker transmart
+pg_dump -a --disable-triggers --attribute-inserts transmart | gzip > tmdump.sql.gz
 ```
-This command will try to log in as user `docker` on docker-based databse, its password is `docker`. In general it is not a good idea to expose our database, so after the copy is complete remove the `ports` section from the `tmdb` service and execute another `docker-compose up` to apply the change.
+
+Depending on the size of your database, this can take some time. When the command is finished, you will have a file called `tmdump.sql.gz`. This is the compressed file containing all SQL statements necessary to restore your database. Copy this file to the host running the `transmart-db` container. The default configuration exposes port 5432 of the container to localhost, so you should be able to connect to it. Use the following command to unzip the file and immediately send the SQL commands to the database:
+
+```sh
+zcat tmdump.sql.gz | psql -h 127.0.0.1 -U docker transmart
+```
+
+You will be asked for the password, which is docker. After the command finishes, you should have all your old data in your new TranSMART server!
 
 ### Loading your own studies
 
