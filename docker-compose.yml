@@ -3,14 +3,12 @@ version: '2'
 services:
   tmweb:
     build: ./transmart-web
+    ports:
+      - "127.0.0.1:8888:80"
     depends_on:
       - tmapp
-    network_mode: host
   tmapp:
     build: ./transmart-app
-    ports:
-      - "127.0.0.1:8080:8080"
-      - "127.0.0.1:8009:8009"
     depends_on:
       - tmdb
       - tmsolr
