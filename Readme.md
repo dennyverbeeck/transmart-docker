@@ -12,10 +12,10 @@ tmapp_1     | INFO: Server startup in 40888 ms
 this means the services are up and running. Verify this by running `docker-compose ps`:
 
 ```
-$ docker-compose.exe ps
+$ docker-compose ps
            Name                         Command               State             Ports
 ----------------------------------------------------------------------------------------------
-transmartdocker_tmapp_1      catalina.sh run                  Up       8009/tcp
+transmartdocker_tmapp_1      catalina.sh run                  Up       8080/tcp
 transmartdocker_tmdb_1       /usr/lib/postgresql/9.3/bi ...   Up       127.0.0.1:5432->5432/tcp
 transmartdocker_tmload_1     echo Use the make commands ...   Exit 0
 transmartdocker_tmrserve_1   /transmart-data/R/root/lib ...   Up       6311/tcp
@@ -26,6 +26,8 @@ transmartdocker_tmweb_1      httpd-foreground                 Up       127.0.0.1
 This overview gives us a lot of information. We can see all services except for `tmload` are up and running (more on `tmload` later). We also see that port 5432 of our own machine is forwarded to port 5432 of the `tmdb` container. Exposing the database port to the localhost allows us to connect to it using tools like `psql`. Point your browser to `http://localhost:8888/` to see your installation running. By default you can log in with username and password admin.
 
 After your first `docker-compose up` command, use `docker-compose stop` and `docker-compose start` to stop and start the TranSMART stack. Using `docker-compose down` **will delete all volumes as well**, resulting in loss of data loaded to TranSMART.
+
+> Note: It is advisable to tune some Postgres settings based on your hardware. There is a script included in the image that sets sensible defaults based on your hardware configuration. You can run the script by executing `docker exec transmartdocker_tmdb_1 /usr/bin/tunepgsql.sh`. Restart the container to apply the settings: `docker restart transmartdocker_tmdb_1`.
 
 ### Components
 This `docker-compose` project consists of the following services:
