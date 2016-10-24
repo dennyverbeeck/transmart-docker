@@ -60,10 +60,10 @@ VOLUME ["/var/lib/postgresql/tablespaces", "/var/log/postgresql", "/var/lib/post
 
 EXPOSE 5432
 
-USER postgres
-
 # Using defaults calculations from PgTune (https://github.com/le0pard/pgtune)
 ADD tunepgsql.sh /usr/bin/tunepgsql.sh
 RUN chmod +x /usr/bin/tunepgsql.sh
+
+USER postgres
 
 ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
