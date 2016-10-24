@@ -2,16 +2,23 @@ version: '2'
 
 services:
   tmweb:
-    build: ./transmart-web
+    image: httpd:alpine
     ports:
       - "127.0.0.1:8888:80"
     depends_on:
       - tmapp
+    volumes:
+      - "./transmart-web/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf"
+      - "./transmart-web/httpd.conf:/usr/local/apache2/conf/httpd.conf"
   tmapp:
     build: ./transmart-app
     depends_on:
       - tmdb
       - tmsolr
+    volumes:
+      - "./transmart-app/Config.groovy:/root/.grails/transmartConfig/Config.groovy"
+      - "./transmart-app/DataSource.groovy:/root/.grails/transmartConfig/DataSource.groovy"
+      - "./transmart-app/setenv.sh:/usr/local/tomcat/bin/setenv.sh"
   tmdb:
     build: ./transmart-db
     ports:
