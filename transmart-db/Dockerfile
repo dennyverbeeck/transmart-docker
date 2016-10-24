@@ -64,6 +64,6 @@ USER postgres
 
 # Using defaults calculations from PgTune (https://github.com/le0pard/pgtune)
 ADD tunepgsql.sh /usr/bin/tunepgsql.sh
-RUN bash /usr/bin/tunepgsql.sh
+RUN chmod +x /usr/bin/tunepgsql.sh
 
 ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
