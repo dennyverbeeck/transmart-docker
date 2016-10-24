@@ -1,9 +1,6 @@
 FROM tomcat:7-jre8
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
-ADD Config.groovy /root/.grails/transmartConfig/Config.groovy
-ADD DataSource.groovy /root/.grails/transmartConfig/DataSource.groovy
-ADD setenv.sh /usr/local/tomcat/bin/setenv.sh
 ADD http://library.transmartfoundation.org/release/release16_1_0_artifacts/transmart.war /usr/local/tomcat/webapps/transmart.war
 
 # change the random number generator to /dev/urandom, since inside a container there is not a lot of

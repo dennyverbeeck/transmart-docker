@@ -2,11 +2,14 @@ version: '2'
 
 services:
   tmweb:
-    build: ./transmart-web
+    image: httpd:alpine
     restart: unless-stopped
+    network_mode: host
     depends_on:
       - tmapp
-    network_mode: host
+    volumes:
+      - "./transmart-web/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf"
+      - "./transmart-web/httpd.conf:/usr/local/apache2/conf/httpd.conf"
   tmapp:
     build: ./transmart-app
     restart: unless-stopped
@@ -15,6 +18,10 @@ services:
     depends_on:
       - tmdb
       - tmsolr
+    volumes:
+      - "./transmart-app/Config.groovy:/root/.grails/transmartConfig/Config.groovy"
+      - "./transmart-app/DataSource.groovy:/root/.grails/transmartConfig/DataSource.groovy"
+      - "./transmart-app/setenv.sh:/usr/local/tomcat/bin/setenv.sh"
   tmdb:
     build: ./transmart-db
     restart: unless-stopped
