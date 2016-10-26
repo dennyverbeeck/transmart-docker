@@ -4,7 +4,7 @@ services:
   tmweb:
     image: httpd:alpine
     ports:
-      - "127.0.0.1:8888:80"
+      - "8888:80"
     depends_on:
       - tmapp
     volumes:
@@ -22,7 +22,7 @@ services:
   tmdb:
     build: ./transmart-db
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
   tmsolr:
     build: ./transmart-solr
   tmrserve:
