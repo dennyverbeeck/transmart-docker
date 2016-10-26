@@ -27,7 +27,12 @@ This overview gives us a lot of information. We can see all services except for 
 
 After your first `docker-compose up` command, use `docker-compose stop` and `docker-compose start` to stop and start the TranSMART stack. Using `docker-compose down` **will delete all volumes as well**, resulting in loss of data loaded to TranSMART.
 
-> Note: It is advisable to tune some Postgres settings based on your hardware. There is a script included in the image that sets sensible defaults based on your hardware configuration. You can run the script by executing `docker exec transmartdocker_tmdb_1 /usr/bin/tunepgsql.sh`. Restart the container to apply the settings: `docker restart transmartdocker_tmdb_1`.
+It is advisable to tune some Postgres settings based on your hardware. There is a script included in the image that sets sensible defaults based on your hardware configuration. You can run the script by executing 
+```
+docker exec transmartdocker_tmdb_1 /usr/bin/tunepgsql.sh
+```
+Restart the container to apply the settings: 
+```docker restart transmartdocker_tmdb_1```
 
 ### Components
 This `docker-compose` project consists of the following services:
