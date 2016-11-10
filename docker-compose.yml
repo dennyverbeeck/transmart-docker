@@ -11,7 +11,6 @@ services:
   tmapp:
     build: ./transmart-app
     ports:
-      - "127.0.0.1:8080:8080"
       - "127.0.0.1:8009:8009"
     depends_on:
       - tmdb
@@ -19,6 +18,8 @@ services:
     restart: always
   tmdb:
     build: ./transmart-db
+    ports:
+      - "127.0.0.1:5432:5432"
     depends_on:
       - tmelk
     restart: always
@@ -37,8 +38,7 @@ services:
   tmelk:
     build: ./transmart-elk
     ports:
-      - "5601:5601"
-      - "5000:5000"
-      - "5044:5044"
-      - "9200:9200"
+      - "127.0.0.1:5601:5601"
+      - "127.0.0.1:5044:5044"
+      - "127.0.0.1:9200:9200"
     restart: always
