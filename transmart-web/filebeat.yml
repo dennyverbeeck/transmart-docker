@@ -33,7 +33,7 @@ filebeat:
       # Exclude lines. A list of regular expressions to match. It drops the lines that are
       # matching any regular expression from the list. The include_lines is called before
       # exclude_lines. By default, no lines are dropped.
-      # exclude_lines: ["^DBG"]
+      exclude_lines: ['[[:space:]]+/elasticsearch/','[[:space:]]+/bundles/','[[:space:]]+/app/']
 
       # Include lines. A list of regular expressions to match. It exports the lines that are
       # matching any regular expression from the list. The include_lines is called before
