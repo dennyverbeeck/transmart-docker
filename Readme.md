@@ -98,6 +98,6 @@ docker run -t --rm              \
   --network transmartdocker_default \
   -v $HOME/my_study:/my_study    \
   -e JAVAMAXMEM='4096'           \
-  transmartdocker_tmload bash /my_study/load_clinical.sh
+  dennyverbeeck/transmart-load:etriks-v3.0 bash /my_study/load_clinical.sh
 ```
 Docker will start a new container based on the `tmload` image, mount your data into it, run the load command and remove the container upon exit. In a different terminal, you can run the following command to keep an eye on the workload of your containers: `docker stats $(docker ps --format={{.Names}})`.
