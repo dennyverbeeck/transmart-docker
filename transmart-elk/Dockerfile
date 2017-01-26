@@ -10,6 +10,7 @@ ADD load_filebeat.sh /usr/bin/load_filebeat.sh
 # add configuration files
 ADD ./tmdb.conf /etc/logstash/conf.d/tmdb.conf
 ADD ./tmweb.conf /etc/logstash/conf.d/tmweb.conf
+ADD ./tmapp.conf /etc/logstash/conf.d/tmapp.conf
 
 # add new start.sh
 ADD start.sh /usr/local/bin/start.sh

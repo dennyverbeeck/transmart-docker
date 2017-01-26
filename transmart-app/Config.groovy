@@ -21,7 +21,7 @@ def jobsDirectory     = "/tmp"
 def oauthEnabled      = true
 def samlEnabled       = false
 def gwavaEnabled      = false
-def transmartURL      = "http://localhost:${System.getProperty('server.port', '8080')}/transmart"
+def transmartURL      = "http://13.79.32.134//transmart"
 
 //Disabling/Enabling UI tabs
 ui {

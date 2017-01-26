@@ -4,7 +4,7 @@ metricbeat:
       metricsets: ["status"]
       hosts: ["http://127.0.0.1/server-status"]
       period: 10s
-      enabled: true
+      enabled: false
     - module: system
       metricsets:
       # CPU stats
@@ -23,7 +23,7 @@ metricbeat:
       - filesystem
 
       # File system summary stats
-      - fsstat
+      #- fsstat
 
       # Memory stats
       - memory
@@ -32,7 +32,7 @@ metricbeat:
       - network
 
       # Per process stats
-      - process
+      # - process
       enabled: true
       period: 10s
       processes: ['.*']
@@ -47,7 +47,7 @@ metricbeat:
         # Stats about every PostgreSQL process
         - activity
 
-      enabled: true
+      enabled: false
       period: 10s
 
       # The host must be passed as PostgreSQL DSN. Example:
@@ -55,6 +55,13 @@ metricbeat:
       # The available parameters are documented here:
       # https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters
       hosts: ["postgres://docker:docker@127.0.0.1:5432?dbname=transmart"]
-output.elasticsearch:
-  hosts: ['http://127.0.0.1:9200/']
-      
+    - module: docker
+      metricsets: ["cpu", "info", "memory", "network", "diskio", "container"]
+      hosts: ["unix:///var/run/docker.sock"]
+      enabled: false
+      period: 10s
+#output.elasticsearch:
+#  hosts: ['http://127.0.0.1:9200/']
+output.console:
+  enabled: true
+  pretty: true      

@@ -16,3 +16,12 @@ RUN sed -i 's#securerandom.source=file:/dev/random#securerandom.source=file:/dev
 # make these directories volumes so the rserve container can use them
 VOLUME ["/tmp"]
 VOLUME ["/usr/local/tomcat/webapps"]
+
+ADD filebeat.yml /etc/filebeat/filebeat.yml
+ADD logstash-beats.crt /etc/filebeat/logstash-beats.crt
+ADD filebeat /usr/bin/filebeat
+ADD start.sh /usr/bin/start.sh
+RUN chmod +x /usr/bin/filebeat
+RUN chmod +x /usr/bin/start.sh
+
+CMD ["/usr/bin/start.sh"]
