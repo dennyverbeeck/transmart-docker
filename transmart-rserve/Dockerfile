@@ -2,10 +2,10 @@ FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
-# This is the latest commit at November 9th 2016, the week after the release of eTRIKS v3.0
-RUN curl -L https://github.com/transmart/transmart-data/archive/d72385fca7b68011524aa12d9d0e7e1478e7e68a.zip -o transmart-data.zip && \
+# This is the latest commit at February 1st 2017
+RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
-    mv transmart-data-d72385fca7b68011524aa12d9d0e7e1478e7e68a transmart-data && \
+    mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
     rm transmart-data.zip
 
 WORKDIR /transmart-data
