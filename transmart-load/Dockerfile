@@ -12,7 +12,7 @@ WORKDIR /transmart-data
 
 ADD kettle.properties /root/.kettle/kettle.properties
 
-RUN apt-get install -y --no-install-recommends postgresql-client openjdk-7-jdk php5-cli php5-json xz-utils
+RUN apt-get install -y --no-install-recommends postgresql-client openjdk-7-jdk php5-cli php5-json xz-utils zip
 
 # install groovy
 RUN curl -s "https://get.sdkman.io" | bash && \

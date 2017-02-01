@@ -17,7 +17,6 @@ RUN make -C solr solr-4.5.0.tgz && \
     apt-get purge -y --auto-remove make rsync patch php5-cli php5-json && \
     rm -rf /var/lib/apt/lists/*
 
-VOLUME ["/transmart-data/solr"]
 EXPOSE 8983
 WORKDIR /transmart-data/solr
 ENTRYPOINT ["java", "-jar", "start.jar"]

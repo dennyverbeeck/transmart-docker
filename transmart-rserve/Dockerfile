@@ -15,15 +15,14 @@ ENV TABLESPACES=dummy
 RUN apt-get install -y libcairo-dev gfortran g++ libreadline-dev libxt-dev libpango1.0-dev libprotoc-dev \
     texlive-fonts-recommended tex-gyre liblz4-tool pv
     
-RUN make -C R install_packages
+# Keep trying make command until we succeed, it seems downloading R packages fails regularly
+RUN until make -C R install_packages; do echo "Failed, retrying..."; done
 
 RUN apt-get purge -y --auto-remove curl unzip make g++ ca-certificates && \
     rm -rf /var/lib/apt/lists/*
     
 RUN sed -i s/deamon/daemon/ /transmart-data/R/Rserv_nodaemon.conf
 RUN echo remote enable >> /transmart-data/R/Rserv_nodaemon.conf
-
-VOLUME ["/transmart-data/R"]
 
 EXPOSE 6311
 
