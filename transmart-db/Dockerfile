@@ -57,8 +57,6 @@ RUN cd transmart-data && make -C env /var/lib/postgresql/tablespaces ../vars && 
 RUN rm -fR transmart-data-release-16.1.zip transmart-data && \
     apt-get purge -y --auto-remove curl unzip make php5-cli php5-json ca-certificates
 
-VOLUME ["/var/lib/postgresql", "/var/log/postgresql"]
-
 EXPOSE 5432
 
 # Using defaults calculations from PgTune (https://github.com/le0pard/pgtune)

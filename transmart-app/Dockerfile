@@ -6,10 +6,3 @@ RUN curl -L https://owncloud.etriks.org/index.php/s/6ubvJTYWaecrJBZ/download -o 
 # change the random number generator to /dev/urandom, since inside a container there is not a lot of
 # entropy to feed /dev/random and it will block for a long time when starting the application
 RUN sed -i 's#securerandom.source=file:/dev/random#securerandom.source=file:/dev/urandom#' /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
-
-# make this a volume since it contains user uploaded files
-VOLUME ["/root/.grails"]
-
-# make these directories volumes so the rserve container can use them
-VOLUME ["/tmp"]
-VOLUME ["/usr/local/tomcat/webapps"]

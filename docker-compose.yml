@@ -22,20 +22,34 @@ services:
       - "./transmart-app/Config.groovy:/root/.grails/transmartConfig/Config.groovy"
       - "./transmart-app/DataSource.groovy:/root/.grails/transmartConfig/DataSource.groovy"
       - "./transmart-app/setenv.sh:/usr/local/tomcat/bin/setenv.sh"
+      - "appdata:/root/.grails"
+      - "apptmp:/tmp"
+      - "appwebapp:/usr/local/tomcat/webapps/transmart"
   tmdb:
     image: dennyverbeeck/transmart-db:etriks-v3.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
+    volumes:
+      - "postgresdata:/var/lib/postgresql"
+      - "postgreslogs:/var/log/postgresql"
   tmsolr:
     image: dennyverbeeck/transmart-solr:etriks-v3.0
     restart: unless-stopped
   tmrserve:
     image: dennyverbeeck/transmart-rserve:etriks-v3.0
     restart: unless-stopped
-    volumes_from:
-      - tmapp
+    volumes:
+      - "apptmp:/tmp"
+      - "appwebapp:/usr/local/tomcat/webapps/transmart"
   tmload:
     image: dennyverbeeck/transmart-load:etriks-v3.0
     depends_on:
       - tmdb
+
+volumes:
+  appdata:
+  apptmp:
+  appwebapp:
+  postgresdata:
+  postgreslogs:
