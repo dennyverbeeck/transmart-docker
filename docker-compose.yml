@@ -24,7 +24,7 @@ services:
       - "./transmart-app/setenv.sh:/usr/local/tomcat/bin/setenv.sh"
       - "appdata:/root/.grails"
       - "apptmp:/tmp"
-      - "appwebapp:/usr/local/tomcat/webapps/transmart"
+      - "appwebapps:/usr/local/tomcat/webapps"
   tmdb:
     image: dennyverbeeck/transmart-db:etriks-v3.0
     restart: unless-stopped
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - "apptmp:/tmp"
-      - "appwebapp:/usr/local/tomcat/webapps/transmart"
+      - "appwebapps:/usr/local/tomcat/webapps"
   tmload:
     image: dennyverbeeck/transmart-load:etriks-v3.0
     depends_on:
@@ -50,6 +50,6 @@ services:
 volumes:
   appdata:
   apptmp:
-  appwebapp:
+  appwebapps:
   postgresdata:
   postgreslogs:
