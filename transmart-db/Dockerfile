@@ -2,10 +2,10 @@ FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make
-RUN curl http://library.transmartfoundation.org/release/release16_1_0_artifacts/transmart-data-release-16.1.zip -o transmart-data-release-16.1.zip && \
-    unzip transmart-data-release-16.1.zip && \
-    mv transmart-data-release-16.1 transmart-data && \
-    rm transmart-data-release-16.1.zip
+RUN curl http://library.transmartfoundation.org/release/release16_2_0_artifacts/transmart-data-release-16.2.zip -o transmart-data-release-16.2.zip && \
+    unzip transmart-data-release-16.2.zip && \
+    mv transmart-data-release-16.2 transmart-data && \
+    rm transmart-data-release-16.2.zip
 
 #### PostgreSQL Setup
 # Add the PostgreSQL PGP key to verify their Debian packages.
@@ -55,8 +55,6 @@ RUN cd transmart-data && make -C env /var/lib/postgresql/tablespaces ../vars && 
     
 RUN rm -fR transmart-data-release-16.1.zip transmart-data && \
     apt-get purge -y --auto-remove curl unzip make php5-cli php5-json
-
-VOLUME ["/var/lib/postgresql/tablespaces", "/var/log/postgresql", "/var/lib/postgresql"]
 
 EXPOSE 5432
 

@@ -44,14 +44,15 @@ ui {
             workspace.hide = false
         }
     }
+    /*
+    //The below disclaimer appears on the login screen, just below the login button.
+    loginScreen {
+        disclaimer = "Please be aware that tranSMART is a data-integration tool that allows for exploration of available study data. The information shown in tranSMART, and derived from performed analyses, are for research purposes only. NOT for decision making in e.g. clinical trial studies."
+    }
+    */
 }
 
 // I001 – Insertion point 'post-WAR-variables'
-
-//transmartURL      = 'http://example.com/transmart/'
-//oauthEnabled      = true
-//samlEnabled       = false
-//gwavaEnabled      = false
 
 /* Other things you may want to change:
  * – Log4j configuration
@@ -61,9 +62,9 @@ ui {
  */
 
 /* If you want to be able to regenerate this file easily, instead of editing
- * the generated file directly, create a Config-extra.groovy file in the root of
- * the transmart-data checkout. That file will be appended to this one whenever
- * the Config.groovy target is run */
+ * the generated file directly, create a Config-extra.php file in the config
+ * directory of the transmart-data checkout. That file will be appended to
+ * this one whenever the Config.groovy target is run */
 
 environments { production {
     if (transmartURL.startsWith('http://localhost:')) {
@@ -160,10 +161,6 @@ environments { development {
     com.recomdata.bugreportURL = 'https://jira.transmartfoundation.org'
 } }
 
-// Keys without defaults (see Config-extra.php.sample):
-// com.recomdata.projectName
-// com.recomdata.providerName
-// com.recomdata.providerURL
 /* }}} */
 
 /* {{{ Login */
@@ -284,13 +281,13 @@ com.recomdata.dataUpload.appTitle="Upload data to tranSMART"
 com.recomdata.dataUpload.stageScript="run_analysis_stage"
 
 // Directory path of com.recomdata.dataUpload.stageScript
-def gwasEtlDirectory = new File(System.getenv('HOME'), '.grails/transmart-gwasetl')
+def gwasEtlDirectory = new File(System.getProperty("user.home"), '.grails/transmart-gwasetl')
 
 // Directory to hold GWAS file uploads
-def gwasUploadsDirectory = new File(System.getenv('HOME'), '.grails/transmart-datauploads')
+def gwasUploadsDirectory = new File(System.getProperty("user.home"), '.grails/transmart-datauploads')
 
 // Directory to preload with template files with names <type>-template.txt
-def gwasTemplatesDirectory = new File(System.getenv('HOME'), '.grails/transmart-templates')
+def gwasTemplatesDirectory = new File(System.getProperty("user.home"), '.grails/transmart-templates')
 
 com.recomdata.dataUpload.templates.dir = gwasTemplatesDirectory.absolutePath
 com.recomdata.dataUpload.uploads.dir = gwasUploadsDirectory.absolutePath
@@ -434,6 +431,7 @@ grails { plugin { springsecurity {
                 '/observations/**': securedResourcesFilters,
                 '/patient_sets/**': securedResourcesFilters,
                 '/oauth/inspectToken': securedResourcesFilters,
+                '/transmart-rest-api-version': 'none',
                 '/**': [
                         'JOINED_FILTERS',
                         '-statelessSecurityContextPersistenceFilter',
@@ -449,10 +447,8 @@ grails { plugin { springsecurity {
         def glowingBearRedirectUris = [
                 transmartURL - ~/transmart\/?$/ + 'connections',
         ]
-        if (transmartURL.startsWith('http://localhost:')) {
-            // for dev, node reverse proxy runs on 8001
-            glowingBearRedirectUris << 'http://localhost:8001/connections'
-        }
+        // for dev, node reverse proxy runs on 8001
+        glowingBearRedirectUris << 'http://localhost:8001/connections'
 
         oauthProvider {
             authorization.requireRegisteredRedirectUri = true
@@ -626,7 +622,7 @@ com.rwg.solr.update.path = '/solr/browse/dataimport/'
 com.recomdata.solr.baseURL = "${com.rwg.solr.scheme}://${com.rwg.solr.host}" +
                              "${new File(com.rwg.solr.browse.path).parent}"
 
-def fileStoreDirectory = new File(System.getenv('HOME'), '.grails/transmart-filestore')
+def fileStoreDirectory = new File(System.getProperty("user.home"), '.grails/transmart-filestore')
 def fileImportDirectory = new File(System.getProperty("java.io.tmpdir"), 'transmart-fileimport')
 com.recomdata.FmFolderService.filestoreDirectory = fileStoreDirectory.absolutePath
 com.recomdata.FmFolderService.importDirectory = fileImportDirectory.absolutePath
@@ -680,10 +676,13 @@ com { recomdata { solr {
 // {{{ Personalization
 // Project name shown on the welcome page
 //com.recomdata.projectName = "MyProject"
+// com.recomdata.projectURL = "http://myproject.org/"
+// com.recomdata.projectLogo = "/myprojectbanner.jpg"
 
 // name and URL of the supporter entity shown on the welcome page
 //com.recomdata.providerName = "tranSMART Foundation"
 //com.recomdata.providerURL = "http://www.transmartfoundation.org"
+//com.recomdata.providerLogo = "/transmart/static/images/transmartlogo.jpg"
 
 // Contact e-mail
 //com.recomdata.contactUs = "support@mycompany.com"

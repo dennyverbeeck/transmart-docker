@@ -22,20 +22,34 @@ services:
       - "./transmart-app/Config.groovy:/root/.grails/transmartConfig/Config.groovy"
       - "./transmart-app/DataSource.groovy:/root/.grails/transmartConfig/DataSource.groovy"
       - "./transmart-app/setenv.sh:/usr/local/tomcat/bin/setenv.sh"
+      - "appdata:/root/.grails"
+      - "apptmp:/tmp"
+      - "appwebapps:/usr/local/tomcat/webapps"
   tmdb:
     build: ./transmart-db
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
+    volumes:
+      - "postgresdata:/var/lib/postgresql"
+      - "postgreslogs:/var/log/postgresql"
   tmsolr:
     build: ./transmart-solr
     restart: unless-stopped
   tmrserve:
     build: ./transmart-rserve
     restart: unless-stopped
-    volumes_from:
-      - tmapp
+    volumes:
+      - "apptmp:/tmp"
+      - "appwebapps:/usr/local/tomcat/webapps"
   tmload:
     build: ./transmart-load
     depends_on:
       - tmdb
+
+volumes:
+  appdata:
+  apptmp:
+  appwebapps:
+  postgresdata:
+  postgreslogs:
