@@ -20,7 +20,7 @@ def searchIndex       = catalinaBase + '/searchIndex' //create this directory
 def jobsDirectory     = "/tmp"
 def oauthEnabled      = true
 def samlEnabled       = false
-def gwavaEnabled      = false
+def gwavaEnabled      = true
 def transmartURL      = "http://localhost/transmart"
 
 //Disabling/Enabling UI tabs
@@ -595,7 +595,7 @@ if (gwavaEnabled) {
     // assume deployment alongside transmart
     com { recomdata { rwg { webstart {
         def url       = new URL(transmartURL)
-        codebase      = "$url.protocol://$url.host${url.port != -1 ? ":$url.port" : ''}/gwava"
+        codebase      = "http://tmgwava:8080/gwava"
         jar           = './ManhattanViz2.1g.jar'
         mainClass     = 'com.pfizer.mrbt.genomics.Driver'
         gwavaInstance = 'transmartstg'
