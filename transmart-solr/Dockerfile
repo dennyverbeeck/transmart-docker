@@ -1,9 +1,8 @@
 FROM openjdk:8
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
-# This is the same as the zip file on http://library.transmartfoundation.org/release/release16_2_0_artifacts/transmart-data.zip
-# but allows us to re-use the layers from the etriks version
+RUN apt-get update && apt-get install -y --no-install-recommends make rsync patch php5-cli php5-json 
+# This is the latest commit at February 1st 2017
 RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
     mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
