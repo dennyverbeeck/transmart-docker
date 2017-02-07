@@ -1,6 +1,6 @@
 # transmart-docker
 
-The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.1`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please use the `-local` version of this branch instead.
+The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please use the `-local` version of this branch instead.
 
 ### Usage
 Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line 
@@ -21,6 +21,7 @@ $ docker-compose ps
 ---------------------------------------------------------------------------------------------------------
 transmartdocker_tmapp_1      catalina.sh run                  Up       127.0.0.1:8009->8009/tcp, 8080/tcp
 transmartdocker_tmdb_1       /usr/lib/postgresql/9.3/bi ...   Up       127.0.0.1:5432->5432/tcp
+transmartdocker_tmgwava_1    catalina.sh run                  Up       8080/tcp
 transmartdocker_tmload_1     echo Use the make commands ...   Exit 0
 transmartdocker_tmrserve_1   /transmart-data/R/root/lib ...   Up       6311/tcp
 transmartdocker_tmsolr_1     java -jar start.jar              Up       8983/tcp
