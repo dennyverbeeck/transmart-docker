@@ -38,16 +38,16 @@ services:
       - "postgresdata:/var/lib/postgresql"
       - "postgreslogs:/var/log/postgresql"
   tmsolr:
-    build: dennyverbeeck/transmart-solr:tmf-16.2
+    image: dennyverbeeck/transmart-solr:tmf-16.2
     restart: unless-stopped
   tmrserve:
-    build: dennyverbeeck/transmart-rserve:tmf-16.2
+    image: dennyverbeeck/transmart-rserve:tmf-16.2
     restart: unless-stopped
     volumes:
       - "apptmp:/tmp"
       - "appwebapps:/usr/local/tomcat/webapps"
   tmload:
-    build: dennyverbeeck/transmart-load:tmf-16.2
+    image: dennyverbeeck/transmart-load:tmf-16.2
     depends_on:
       - tmdb
 
