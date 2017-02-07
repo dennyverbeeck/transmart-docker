@@ -6,3 +6,6 @@ MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 RUN sed -i 's#securerandom.source=file:/dev/random#securerandom.source=file:/dev/urandom#' /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
 
 ADD http://library.transmartfoundation.org/release/release16_2_0_artifacts/gwava.war /usr/local/tomcat/webapps/gwava.war
+
+LABEL TRANSMART_VERSION=TMF16.2
+

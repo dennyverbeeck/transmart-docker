@@ -1,11 +1,13 @@
 FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make
-RUN curl http://library.transmartfoundation.org/release/release16_2_0_artifacts/transmart-data-release-16.2.zip -o transmart-data-release-16.2.zip && \
-    unzip transmart-data-release-16.2.zip && \
-    mv transmart-data-release-16.2 transmart-data && \
-    rm transmart-data-release-16.2.zip
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
+# This is the same as the zip file on http://library.transmartfoundation.org/release/release16_2_0_artifacts/transmart-data.zip
+# but allows us to re-use the layers from the etriks version
+RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
+    unzip transmart-data.zip && \
+    mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
+    rm transmart-data.zip
 
 WORKDIR /transmart-data
 
@@ -18,7 +20,7 @@ RUN apt-get install -y --no-install-recommends postgresql-client openjdk-7-jdk p
 RUN curl -s "https://get.sdkman.io" | bash && \
     bash -c "source /root/.sdkman/bin/sdkman-init.sh && \
     sdk install groovy 2.4.5"
-	
+
 ENV PATH /root/.sdkman/candidates/groovy/2.4.5/bin:$PATH
 
 
@@ -42,3 +44,5 @@ RUN cd env && curl http://library.transmartfoundation.org/release/release16_2_0_
 	rm tranSMART-ETL-release-16.2.zip
 
 CMD ["echo","Use the make commands provided by samples/postgres to load data. E.g. run\ndocker-compose run --rm tmload make -C samples/postgres load_clinical_ElevadaGSE14468\nFor more information go to https://wiki.transmartfoundation.org/display/transmartwiki/Curated+Data."]
+
+LABEL TRANSMART_VERSION=TMF16.2
