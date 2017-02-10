@@ -21,5 +21,5 @@ EXPOSE 8983
 WORKDIR /transmart-data/solr
 ENTRYPOINT ["java", "-jar", "start.jar"]
 
-LABEL TRANSMART_VERSION=TMF16.2
+LABEL TRANSMART_VERSION="TMF16.2"
 

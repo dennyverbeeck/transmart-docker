@@ -45,4 +45,4 @@ RUN cd env && curl http://library.transmartfoundation.org/release/release16_2_0_
 
 CMD ["echo","Use the make commands provided by samples/postgres to load data. E.g. run\ndocker-compose run --rm tmload make -C samples/postgres load_clinical_ElevadaGSE14468\nFor more information go to https://wiki.transmartfoundation.org/display/transmartwiki/Curated+Data."]
 
-LABEL TRANSMART_VERSION=TMF16.2
+LABEL TRANSMART_VERSION="TMF16.2"

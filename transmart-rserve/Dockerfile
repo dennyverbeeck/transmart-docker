@@ -29,5 +29,5 @@ EXPOSE 6311
 
 CMD ["/transmart-data/R/root/lib/R/bin/R","CMD","Rserve.dbg","--no-save","--RS-conf","/transmart-data/R/Rserv_nodaemon.conf"]
 
-LABEL TRANSMART_VERSION=TMF16.2
+LABEL TRANSMART_VERSION="TMF16.2"
 
