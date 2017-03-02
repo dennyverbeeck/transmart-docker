@@ -1,13 +1,13 @@
 # transmart-docker
 
-The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please use the `-local` version of this branch instead.
+The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please refer to the 'Running a local instance' section in this readme.
 
 ### Usage
 Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line
 ```
 def transmartURL      = "http://localhost/transmart"
 ```
-to the actual URL of your server. Additionally open the file `transmart-web/httpd-vhosts.cfg` and modify the `ServerAdmin` directive to the e-mail address of your server administrator. It should be sufficient now to execute `docker-compose up` in the root directory of the repository. This will automatically download all the necessary components, build images, create the network and run the containers. When you see a line like this
+to the actual URL of your server. Additionally open the file `transmart-web/httpd-vhosts.cfg` and modify the `ServerAdmin` directive to the e-mail address of your server administrator. It should be sufficient now to execute `docker-compose up` in the root directory of the repository. This will automatically download all the necessary components, create the network and volumes and run the containers. When you see a line like this
 
 ```
 tmapp_1     | INFO: Server startup in 40888 ms
@@ -30,7 +30,7 @@ transmartdocker_tmweb_1      httpd-foreground                 Up
 
 This overview gives us a lot of information. We can see all services except for `tmload` are up and running (more on `tmload` later). We also see that port 5432 of our own machine is forwarded to port 5432 of the `tmdb` container, and that port 8009 is forwarded to port 8009 of the `tmapp` container. Exposing the database port to the localhost allows us to connect to it using tools like `psql`. Port 8009 is used by the `tmweb` container to proxy requests to the web application over the `ajp` protocol. Point your browser to your server URL to see your installation running. By default you can log in with username and password admin. Change the password for the admin user as soon as possible.
 
-After your first `docker-compose up` command, use `docker-compose stop` and `docker-compose start` to stop and start the TranSMART stack.
+After your first `docker-compose up` command, use `docker-compose stop` and `docker-compose start` to stop and start the TranSMART stack. Using `docker-compose down` **will delete all volumes as well**, resulting in loss of data loaded to TranSMART.
 
 It is advisable to tune some Postgres settings based on your hardware. There is a script included in the image that sets sensible defaults based on your hardware configuration. You can run the script by executing
 ```
@@ -39,8 +39,22 @@ docker exec transmartdocker_tmdb_1 /usr/bin/tunepgsql.sh
 Restart the container to apply the settings:
 ```docker restart transmartdocker_tmdb_1```
 
-### Upgrading
-For all services except `tmapp` it is sufficient to modify the tag in the `docker-compose` file (or pulling a new version of the file from this repository), and executing `docker-compose up -d` again. Compose will auto-detect which services should be recreated. For `tmapp` we need to do a bit more work. This is because the exploded WAR file is also kept in a volume, since it needs to be shared with the `tmrserve` service. Before we can remove the volume, we'll need to remove the containers using it by running `docker-compose rm -f tmapp tmrserve`. Delete the volume by executing `docker volume rm transmartdocker_appwebapps`. Afterwards we can run `docker-compose up -d` again and Compose will recreate the volume and containers for us.
+### Running a local instance
+If you want to run this setup on your own machine instead of a server, it will be more convenient to have the application be served to a non-priviliged port. For most setups, it will be sufficient to change the `tmweb` service block to the following:
+```
+  tmweb:
+    image: httpd:alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8888:80"
+    depends_on:
+      - tmapp
+    volumes:
+      - "./transmart-web/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf"
+      - "./transmart-web/httpd.conf:/usr/local/apache2/conf/httpd.conf"
+```
+
+You can now go back to following the instructions in the 'Usage' section.
 
 ### Components
 This `docker-compose` project consists of the following services:
@@ -48,9 +62,11 @@ This `docker-compose` project consists of the following services:
   - `tmapp`: the tomcat server and application,
   - `tmdb`: the Postgres database, the database in this image has a superadmin with username docker and password docker
   - `tmsolr`: the SOLR installation for faceted search,
-  - `tmrserve`: Rserve instance for advanced analyses,
-  - `tmload`: a Kettle installation you can use for loading data and,
-  - `tmgwava`: Genome Wide Association Study Visualizer.
+  - `tmrserve`: Rserve instance for advanced analyses and,
+  - `tmload`: a Kettle installation you can use for loading data.
+
+### Upgrading
+For all services except `tmapp` it is sufficient to modify the tag in the `docker-compose` file (or pulling a new version of the file from this repository), and executing `docker-compose up -d` again. Compose will auto-detect which services should be recreated. For `tmapp` we need to do a bit more work. This is because the exploded WAR file is also kept in a volume, since it needs to be shared with the `tmrserve` service. Before we can remove the volume, we'll need to remove the containers using it by running `docker-compose rm -f tmapp tmrserve`. Delete the volume by executing `docker volume rm transmartdocker_appwebapps`. Afterwards we can run `docker-compose up -d` again and Compose will recreate the volume and containers for us.
 
 ### Loading public datasets
 
