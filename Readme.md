@@ -1,3 +1,14 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [transmart-docker](#)
+		- [Usage](#)
+		- [Running a local instance](#)
+		- [Components](#)
+		- [Upgrading](#)
+		- [Loading public datasets](#)
+		- [Copy data from an existing instance](#)
+		- [Loading your own studies](#)
+
 # transmart-docker
 
 The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please refer to the 'Running a local instance' section in this readme.
