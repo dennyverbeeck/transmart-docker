@@ -3,10 +3,10 @@
 The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please use the `-local` version of this branch instead.
 
 ### Usage
-Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line 
+Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line
 ```
 def transmartURL      = "http://localhost/transmart"
-``` 
+```
 to the actual URL of your server. Additionally open the file `transmart-web/httpd-vhosts.cfg` and modify the `ServerAdmin` directive to the e-mail address of your server administrator. It should be sufficient now to execute `docker-compose up` in the root directory of the repository. This will automatically download all the necessary components, build images, create the network and run the containers. When you see a line like this
 
 ```
