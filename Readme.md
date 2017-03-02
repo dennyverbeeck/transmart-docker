@@ -1,3 +1,13 @@
+Table of Contents
+=================
+- [Usage](#usage)
+- [Running a local instance](#running-a-local-instance)
+- [Components](#components)
+- [Upgrading](#upgrading)
+- [Loading public datasets](#loading-public-datasets)
+- [Copy data from an existing instance](#copy-data-from-an-existing-instance)
+- [Loading your own studies](#loading-your-own-studies)
+
 transmart-docker
 ================
 
