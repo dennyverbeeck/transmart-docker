@@ -1,19 +1,11 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [transmart-docker](#)
-		- [Usage](#)
-		- [Running a local instance](#)
-		- [Components](#)
-		- [Upgrading](#)
-		- [Loading public datasets](#)
-		- [Copy data from an existing instance](#)
-		- [Loading your own studies](#)
-
-# transmart-docker
+transmart-docker
+================
 
 The purpose of this repository is to provide a Docker-based installation of TranSMART. Since TranSMART consists of multiple services, `docker-compose` is used to build images for the different services and manage the links between them. Apache is used to reverse proxy requests to the Tomcat server. This branch of the repository contains [Transmart Foundation](http://transmartfoundation.org/) version `16.2`, and the default settings are geared towards deployment on a server. If you want to try TranSMART on your local machine, please refer to the 'Running a local instance' section in this readme.
 
-### Usage
+Usage
+-----
+
 Clone this repository to an easily accessible location on your server. There are a few configuration files to be modified before building the images. The first is `transmart-app/Config.groovy`. Modify the line
 ```
 def transmartURL      = "http://localhost/transmart"
@@ -50,7 +42,9 @@ docker exec transmartdocker_tmdb_1 /usr/bin/tunepgsql.sh
 Restart the container to apply the settings:
 ```docker restart transmartdocker_tmdb_1```
 
-### Running a local instance
+Running a local instance
+------------------------
+
 If you want to run this setup on your own machine instead of a server, it will be more convenient to have the application be served to a non-priviliged port. For most setups, it will be sufficient to change the `tmweb` service block to the following:
 ```
   tmweb:
@@ -67,7 +61,9 @@ If you want to run this setup on your own machine instead of a server, it will b
 
 You can now go back to following the instructions in the 'Usage' section.
 
-### Components
+Components
+----------
+
 This `docker-compose` project consists of the following services:
   - `tmweb`: httpd frontend and reverse-proxy for tomcat, this container is connected to the `host` network. This allows to see the actual client IPs in the Apache logs rather than the IP of the docker bridge.
   - `tmapp`: the tomcat server and application,
@@ -76,10 +72,13 @@ This `docker-compose` project consists of the following services:
   - `tmrserve`: Rserve instance for advanced analyses and,
   - `tmload`: a Kettle installation you can use for loading data.
 
-### Upgrading
+Upgrading
+---------
+
 For all services except `tmapp` it is sufficient to modify the tag in the `docker-compose` file (or pulling a new version of the file from this repository), and executing `docker-compose up -d` again. Compose will auto-detect which services should be recreated. For `tmapp` we need to do a bit more work. This is because the exploded WAR file is also kept in a volume, since it needs to be shared with the `tmrserve` service. Before we can remove the volume, we'll need to remove the containers using it by running `docker-compose rm -f tmapp tmrserve`. Delete the volume by executing `docker volume rm transmartdocker_appwebapps`. Afterwards we can run `docker-compose up -d` again and Compose will recreate the volume and containers for us.
 
-### Loading public datasets
+Loading public datasets
+-----------------------
 
 > Note: If you plan on copying an existing TranSMART database to your new docker-based one, please do this first, it is explained in the next section.
 
@@ -88,7 +87,8 @@ You can use the `tmload` image to load data to the database through Kettle. The 
 $ docker-compose run --rm tmload make -C samples/postgres load_clinical_ElevadaGSE14468
 ```
 
-### Copy data from an existing instance
+Copy data from an existing instance
+-----------------------------------
 
 If you have an existing instance of TranSMART running, you may want to copy the database to your new dockerized instance. It is best you do this to an empty, but initialized TranSMART database, since everything will be copied, including things like sequence values. The most portable way of copying is using `pg_dump` to dump all data from the old database in the form of attribute inserts, and use this file to load data into the new database. Using the `--attribute-inserts` option ensures that a single failed insertion (e.g. a row that exists in the new database, like the definition of the admin user) does not cause the whole table not to be loaded. It also guards against minor schema changes, such as a column with default value that was added to an existing table. On the host where the old database resides, log in as the `postgres` user (or any other means that allows you access to the database) and execute the following:
 
@@ -104,7 +104,8 @@ zcat tmdump.sql.gz | psql -h 127.0.0.1 -U docker transmart
 
 You will be asked for the password, which is docker. After the command finishes, you should have all your old data in your new TranSMART server!
 
-### Loading your own studies
+Loading your own studies
+------------------------
 
 If you have a study prepared in a suitable format you can use the `tmload` container to load this as well. There is a manual describing the file formats available on the [eTRIKS Portal](https://portal.etriks.org/Portal/), under the 'Downloadable documents' section. The following tutorial will show you how to load clinical data.
 
