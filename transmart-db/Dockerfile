@@ -4,9 +4,9 @@ MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
 # This is the same as the zip file on http://library.transmartfoundation.org/release/release16_2_0_artifacts/transmart-data.zip
 # but allows us to re-use the layers from the etriks version
-RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
+RUN curl -L https://github.com/transmart/transmart-data/archive/58ec9a748b46afc39a4a85623dcceb8b2220f12f.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
-    mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
+    mv transmart-data-58ec9a748b46afc39a4a85623dcceb8b2220f12f transmart-data && \
     rm transmart-data.zip
 
 #### PostgreSQL Setup
@@ -68,5 +68,5 @@ USER postgres
 
 ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
 
-LABEL TRANSMART_VERSION="TMF16.2"
+LABEL SOURCE_COMMIT="https://github.com/transmart/transmart-data/tree/58ec9a748b46afc39a4a85623dcceb8b2220f12f"
 

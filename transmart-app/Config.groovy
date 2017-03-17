@@ -23,6 +23,10 @@ def samlEnabled       = false
 def gwavaEnabled      = true
 def transmartURL      = "http://localhost/transmart"
 
+grails.plugin.transmartGwasPlink.enabled = true
+grails.plugin.transmartGwasPlink.plinkPath = 'full/path/to/plink-1.07-version/plink'
+
+
 //Disabling/Enabling UI tabs
 ui {
     tabs {

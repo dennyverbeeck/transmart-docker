@@ -11,7 +11,7 @@ services:
       - "./transmart-web/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf"
       - "./transmart-web/httpd.conf:/usr/local/apache2/conf/httpd.conf"
   tmapp:
-    image: dennyverbeeck/transmart-app:tmf-16.2
+    image: dennyverbeeck/transmart-app:latest
     restart: unless-stopped
     ports:
       - "127.0.0.1:8009:8009"
@@ -30,7 +30,7 @@ services:
     image: dennyverbeeck/transmart-gwava:tmf-16.2
     restart: unless-stopped
   tmdb:
-    image: dennyverbeeck/transmart-db:tmf-16.2
+    image: dennyverbeeck/transmart-db:latest
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
