@@ -63,6 +63,14 @@ EXPOSE 5432
 ADD tunepgsql.sh /usr/bin/tunepgsql.sh
 RUN chmod +x /usr/bin/tunepgsql.sh
 
+# Add workaround for AUFS issue described at (https://github.com/moby/moby/issues/783#issuecomment-56013588)
+RUN mkdir /etc/ssl/private-copy && \
+    mv /etc/ssl/private/* /etc/ssl/private-copy/ && \
+    rm -r /etc/ssl/private && \
+    mv /etc/ssl/private-copy /etc/ssl/private && \
+    chmod -R 0700 /etc/ssl/private && \
+    chown -R postgres /etc/ssl/private
+
 USER postgres
 
 ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
