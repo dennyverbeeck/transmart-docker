@@ -3,9 +3,9 @@ MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
 # This is the latest commit at February 1st 2017
-RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
+RUN curl -L https://github.com/transmart/transmart-data/archive/862c907378d7859b7997d8962aaea9f57b81e284.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
-    mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
+    mv transmart-data-862c907378d7859b7997d8962aaea9f57b81e284 transmart-data && \
     rm transmart-data.zip
 
 #### PostgreSQL Setup
@@ -74,3 +74,4 @@ RUN mkdir /etc/ssl/private-copy && \
 USER postgres
 
 ENTRYPOINT ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+

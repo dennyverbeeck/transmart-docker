@@ -2,10 +2,10 @@ FROM debian:jessie
 MAINTAINER Denny Verbeeck <dverbeec@its.jnj.com>
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip make ca-certificates
-# This is the latest commit at February 1st 2017
-RUN curl -L https://github.com/transmart/transmart-data/archive/7c492340e43eaf4366c6bac003a273a4287f3cad.zip -o transmart-data.zip && \
+# This is the latest commit at May 23rd 2017
+RUN curl -L https://github.com/transmart/transmart-data/archive/862c907378d7859b7997d8962aaea9f57b81e284.zip -o transmart-data.zip && \
     unzip transmart-data.zip && \
-    mv transmart-data-7c492340e43eaf4366c6bac003a273a4287f3cad transmart-data && \
+    mv transmart-data-862c907378d7859b7997d8962aaea9f57b81e284 transmart-data && \
     rm transmart-data.zip
 
 WORKDIR /transmart-data
@@ -33,10 +33,10 @@ ENV TABLESPACES=dummy \
 RUN make -C env data-integration && \
     make update_datasets
 
-# This is the latest commit at November 9th 2016, the week after the release of eTRIKS v3.0
-RUN cd env && curl -L https://github.com/transmart/tranSMART-ETL/archive/01fff8f9469349b5e2673a0a6113bb75d60416a9.zip -o tranSMART-ETL.zip && \
+# This is the latest commit at May 23rd 2017
+RUN cd env && curl -L https://github.com/transmart/tranSMART-ETL/archive/1bbaca429be8575edade4f2bb748725602f3b84e.zip -o tranSMART-ETL.zip && \
     unzip tranSMART-ETL.zip && \
-    mv tranSMART-ETL-01fff8f9469349b5e2673a0a6113bb75d60416a9 tranSMART-ETL && \
+    mv tranSMART-ETL-1bbaca429be8575edade4f2bb748725602f3b84e tranSMART-ETL && \
     rm tranSMART-ETL.zip
 
 CMD ["echo","Use the make commands provided by samples/postgres to load data. E.g. run\ndocker-compose run --rm tmload make -C samples/postgres load_clinical_ElevadaGSE14468\nFor more information go to https://wiki.transmartfoundation.org/display/transmartwiki/Curated+Data."]
