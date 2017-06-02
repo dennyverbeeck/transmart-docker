@@ -21,6 +21,7 @@ def jobsDirectory     = "/tmp"
 def oauthEnabled      = true
 def samlEnabled       = false
 def gwavaEnabled      = false
+def ldapEnabled       = false
 def transmartURL      = "http://localhost/transmart"
 
 //Disabling/Enabling UI tabs
@@ -482,6 +483,58 @@ grails { plugin { springsecurity {
 } } }
 /* }}} */
 
+
+//{{{ LDAP Configuration
+
+if (ldapEnabled) {
+    grails.plugin.springsecurity.ldap.active = true
+    org.transmart.security.spnegoEnabled = true
+
+    grails { plugin { springsecurity {
+        providerNames << 'ldapAuthProvider'
+    } } }
+
+    grails { plugin { springsecurity { ldap {
+        active = true
+
+        context {
+            // Address of the LDAP server
+            server = 'ldap://openldap:389'
+            // Distinguished Name (DN) to authenticate with
+            managerDn = 'cn=admin,dc=etriks,dc=eu'
+            // Password to authenticate with
+            managerPassword = 'admin'
+            // Whether or not integrate internal roles. Blurry notion, documentation missing
+            allowInternaRoles = 'false'
+        }
+
+        search {
+            // Context name to search in, relative to the base of the configured ContextSource, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'
+            base = 'dc=etriks,dc=eu'
+            // The filter expression used in the user search
+            filter = '(uid={0})'
+        }
+
+        // Names of attribute ids to return; use null to return all and an empty list to return none
+        authenticator.attributesToReturn = ['uid', 'mail', 'cn']
+
+        authorities {
+            // The base DN from which the search for group membership should be performed
+            groupSearchBase = 'ou=transmart,dc=etriks,dc=eu'
+            // The pattern to be used for the user search. {0} is the user's DN
+            groupSearchFilter = 'memberUid={1}'
+            // Whether PartialResultExceptions should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals
+            ignorePartialResultException = true
+            // Whether to infer roles based on group membership
+            retrieveGroupRoles = true
+            // Whether to retrieve additional roles from the database using the User/Role many-to-many
+            retrieveDatabaseRoles = false
+        }
+} } } } }
+
+/* } } } */
+
+
 //{{{ SAML Configuration
 
 if (samlEnabled) {
@@ -509,7 +562,7 @@ if (samlEnabled) {
             /* {{{ Service provider details (we) */
             sp {
                 // ID of the Service Provider
-                id = "gustavo-transmart"
+                id = "transmart"
 
                 // URL of the service provider. This should be autodected, but it isn't
                 url = "http://localhost:8080/transmart"
@@ -528,7 +581,7 @@ if (samlEnabled) {
             // retrieving it from the provider on startup to prevent transmart from
             // being unable to start due to provider being down. A copy will still be
             // periodically fetched from the provider
-            idp.metadataFile = '/home/glopes/idp-local-metadata.xml'
+            idp.metadataFile = '/root/idp-local-metadata.xml'
 
             /* {{{ Keystore details */
             keystore {
@@ -537,7 +590,7 @@ if (samlEnabled) {
                 //    -keystore transmart.jks -storepass changeit \
                 //    -validity 3602 -keysize 2048
                 // Location of the keystore. You can use other schemes, like classpath:resource/samlKeystore.jks
-                file = 'file:///home/glopes/transmart.jks'
+                file = 'file:///root/transmart.jks'
 
                 // keystore's storepass
                 password="changeit"
