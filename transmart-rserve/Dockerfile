@@ -16,9 +16,12 @@ RUN apt-get install -y libcairo-dev gfortran g++ libreadline-dev libxt-dev libpa
     texlive-fonts-recommended tex-gyre liblz4-tool pv
 
 
+# Remove the -march=native option so our container will run on more CPUs, add it in again
+# after building so people can rebuild it if they want to
 # Keep trying make command until we succeed, it seems downloading R packages fails regularly
-#RUN until make -C R install_packages; do echo "Failed, retrying..."; done
-RUN make -C R install_packages
+RUN sed -i 's/R_FLAGS ?= -O2 -march=native/R_FLAGS ?= -O2/' R/Makefile && \
+    until make -C R install_packages; do echo "Failed, retrying..."; done && \
+    sed -i 's/R_FLAGS ?= -O2/R_FLAGS ?= -O2 -march=native/' R/Makefile
 
 RUN apt-get purge -y --auto-remove curl unzip make g++ ca-certificates && \
     rm -rf /var/lib/apt/lists/*
